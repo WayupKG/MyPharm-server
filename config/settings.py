@@ -25,6 +25,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_cleanup',
+    'imagekit',
+    'rest_framework',
+    'djoser',
+    'drf_yasg',
+
+    # create app
+    'apps.user.apps.UserConfig',
 ]
 
 MIDDLEWARE = [
@@ -71,6 +79,8 @@ DATABASES = {
         "PORT": os.environ.get("DATABASE_PORT", "5432"),
     }
 }
+
+AUTH_USER_MODEL = 'user.User'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 

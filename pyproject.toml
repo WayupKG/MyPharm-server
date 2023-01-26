@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "mypharm"
+version = "0.1.0"
+description = "MyPharm - онлайн аптека"
+authors = ["wayupkg <adikgk232323@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+django = "4.0"
+djangorestframework = "^3.14.0"
+djoser = "^2.1.0"
+pillow = "^9.4.0"
+drf-yasg = "^1.21.4"
+environs = "^9.5.0"
+transliterate = "^1.10.2"
+celery = {extras = ["redis"], version = "^5.2.7"}
+psycopg2-binary = "^2.9.5"
+django-cleanup = "^6.0.0"
+django-imagekit = "^4.1.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

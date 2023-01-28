@@ -11,19 +11,24 @@ User = get_user_model()
 
 class UserSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(label='email', read_only=True)
-    user_type = serializers.CharField(label='user_type', read_only=True)
 
     class Meta:
         model = User
-        fields = ('email', 'first_name', 'last_name', 'phone', 'avatar', 'user_type')
+        fields = ['email', 'first_name', 'last_name', 'sur_name',
+                  'gender', 'phone', 'address', 'is_pensioner',
+                  'is_beneficiaries']
 
 
 class RegistrationSerializer(serializers.ModelSerializer):
     """Сериализация пользователя"""
+    password = serializers.CharField(max_length=128, min_length=8, write_only=True)
+    password_confirm = serializers.CharField(max_length=128, min_length=8, write_only=True)
 
     class Meta:
         model = User
-        fields = ['email', 'first_name', 'last_name', 'sur_name', 'user_type', 'password', 'password_confirm']
+        fields = ['email', 'first_name', 'last_name', 'sur_name',
+                  'gender', 'phone', 'address', 'is_pensioner',
+                  'is_beneficiaries', 'password', 'password_confirm']
 
     def validate(self, validated_data: dict[str, str]) -> dict[str, str]:
         to_validate = validate_password(**validated_data)

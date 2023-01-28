@@ -7,8 +7,8 @@ from .yasg import schema_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/auth/', include('api.auth.urls')),
     path('api/v1/', include('api.v1.urls')),
+    path('api/v1/auth/', include('api.auth.urls')),
     path('', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
 ]
 

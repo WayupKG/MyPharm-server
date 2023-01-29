@@ -1,8 +1,4 @@
 from django.contrib.auth import get_user_model
-from django.utils.decorators import method_decorator
-from drf_yasg.openapi import Parameter, IN_QUERY, IN_PATH
-
-from drf_yasg.utils import swagger_auto_schema
 
 from rest_framework import viewsets, mixins
 from rest_framework.decorators import action
@@ -16,7 +12,8 @@ from apps.user.serializers import UserSerializer
 User = get_user_model()
 
 
-class UserViewSet(mixins.RetrieveModelMixin,
+class UserViewSet(mixins.ListModelMixin,
+                  mixins.RetrieveModelMixin,
                   mixins.UpdateModelMixin,
                   mixins.DestroyModelMixin,
                   GenericViewSet):

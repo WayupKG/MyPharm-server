@@ -40,6 +40,10 @@ __pycache__/
 media/*
 !*media/.gitkeep
 
+static/admin
+static/drf-yasg
+static/rest_framework
+
 **/logs/**
 !**/logs
 

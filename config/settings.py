@@ -36,6 +36,8 @@ INSTALLED_APPS = [
 
     # create app
     'apps.user.apps.UserConfig',
+    'apps.company.apps.CompanyConfig',
+    'apps.medicine.apps.MedicineConfig',
 ]
 
 MIDDLEWARE = [

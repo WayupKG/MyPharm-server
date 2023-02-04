@@ -5,7 +5,7 @@ class Company(models.Model):
     """Фармацевтические компании"""
     title = models.CharField('Название', max_length=225)
     description = models.TextField('Описание', null=True, blank=True)
-    logo = models.ImageField('Логотип', upload_to='/')
+    logo = models.ImageField('Логотип', upload_to='companies/')
 
     created_at = models.DateTimeField(auto_now=True)
     updated_at = models.DateTimeField(auto_now_add=True)
@@ -22,9 +22,9 @@ class Company(models.Model):
 
 class ContractCompany(models.Model):
     """Контракт с компанией"""
-    company = models.OneToOneField(Company, 'Компания', on_delete=models.CASCADE, related_name='contract')
+    company = models.OneToOneField(Company, verbose_name='Компания', on_delete=models.CASCADE, related_name='contract')
     description = models.TextField('Описание', null=True, blank=True)
-    file = models.FileField('Файл контракта', upload_to='/')
+    file = models.FileField('Файл контракта', upload_to='contracts/')
 
     is_active = models.BooleanField(default=True)
 
@@ -47,7 +47,7 @@ class Pharmacy(models.Model):
     """Аптека"""
     title = models.CharField('Название', max_length=225)
     description = models.TextField('Описание', null=True, blank=True)
-    company = models.ForeignKey(Company, 'Компания', on_delete=models.CASCADE, related_name='pharmacies')
+    company = models.ForeignKey(Company, verbose_name='Компания', on_delete=models.CASCADE, related_name='pharmacies')
     region = models.CharField(max_length=32)  # Надо доработать
     address = models.CharField(max_length=32)  # Надо доработать
     cell_phone = models.CharField(max_length=32)  # Надо доработать

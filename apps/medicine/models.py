@@ -1,6 +1,11 @@
 from django.core.validators import MaxValueValidator
 from django.db import models
 
+from imagekit.models import ProcessedImageField
+from imagekit.processors import ResizeToFill
+
+from common.upload_to_file import medicine_img
+
 
 class Category(models.Model):
     """Категория препаратов"""
@@ -26,8 +31,8 @@ class Medicine(models.Model):
     title = models.CharField('Название', max_length=255)
     description = models.TextField('Описание')
     category = models.ForeignKey(Category, verbose_name='Категория', on_delete=models.PROTECT)
-    image = models.ImageField(verbose_name='Изображение', upload_to='medicines/')
-
+    image = ProcessedImageField(verbose_name='Изображение', upload_to=medicine_img,
+                                format='webp', options={'quality': 90})
     is_prescription_required = models.BooleanField(verbose_name='Рецептурный препарат', default=False)
     is_active = models.BooleanField(verbose_name='Является активным', default=True)
 
@@ -90,8 +95,8 @@ class PharmacyMedicine(models.Model):
     objects = models.Manager()
 
     class Meta:
-        verbose_name = 'Препарат'
-        verbose_name_plural = 'Препараты'
+        verbose_name = 'Аптечный Препарат'
+        verbose_name_plural = 'Аптечные Препараты'
 
     def __str__(self):
         return f"{self.pharmacy} - {self.medicine}"

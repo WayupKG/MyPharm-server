@@ -1,11 +1,17 @@
 from django.db import models
 
+from imagekit.models import ProcessedImageField
+from imagekit.processors import ResizeToFill
+
+from common.upload_to_file import company_logo_img, company_contract_file
+
 
 class Company(models.Model):
     """Фармацевтические компании"""
     title = models.CharField('Название', max_length=225)
     description = models.TextField('Описание', null=True, blank=True)
-    logo = models.ImageField('Логотип', upload_to='companies/')
+    logo = ProcessedImageField(verbose_name='Логотип', upload_to=company_logo_img,
+                               format='webp', options={'quality': 90})
 
     created_at = models.DateTimeField(auto_now=True)
     updated_at = models.DateTimeField(auto_now_add=True)
@@ -24,7 +30,7 @@ class ContractCompany(models.Model):
     """Контракт с компанией"""
     company = models.OneToOneField(Company, verbose_name='Компания', on_delete=models.CASCADE, related_name='contract')
     description = models.TextField('Описание', null=True, blank=True)
-    file = models.FileField('Файл контракта', upload_to='contracts/')
+    file = models.FileField('Файл контракта', upload_to=company_contract_file)
 
     is_active = models.BooleanField(default=True)
 

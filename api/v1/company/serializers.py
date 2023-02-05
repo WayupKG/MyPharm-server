@@ -19,6 +19,8 @@ class CompanyListSerializer(ModelSerializer):
 
 class PharmacySerializer(ModelSerializer):
     """Сериализация аптек"""
+    company = CompanyListSerializer(many=False)
+
     class Meta:
         model = Pharmacy
         fields = ['id', 'title', 'description', 'company', 'region', 'address',

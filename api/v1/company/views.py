@@ -14,7 +14,7 @@ class CompanyViewSet(viewsets.ModelViewSet):
     queryset = Company.objects.all()
 
     def get_permissions(self):
-        if self.action in ['list', 'retrieve']:
+        if self.action in ['list', 'retrieve', 'pharmacies']:
             self.permission_classes = [AllowAny]
         return super().get_permissions()
 
@@ -35,7 +35,7 @@ class CompanyViewSet(viewsets.ModelViewSet):
 class PharmacyViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAdminUser]
     serializer_class = serializers.PharmacySerializer
-    queryset = Pharmacy.objects.all()
+    queryset = Pharmacy.objects.select_related('company')
 
     def get_permissions(self):
         if self.action in ['list', 'retrieve']:

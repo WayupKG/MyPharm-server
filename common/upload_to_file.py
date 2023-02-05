@@ -8,9 +8,8 @@ def avatar_img(instance, filename: str) -> str:
 
 
 def company_logo_img(instance, filename: str) -> str:
-    _translit = translit(instance.title)
-    _filename: str = f'{_translit}.{filename.split(".")[-1]}'
-    return f'companies/{_translit}/{_filename}'
+    _filename: str = f'logo.{filename.split(".")[-1]}'
+    return f'companies/{translit(instance.title)}/{_filename}'
 
 
 def company_contract_file(instance, filename: str) -> str:

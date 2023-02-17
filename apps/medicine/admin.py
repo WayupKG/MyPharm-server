@@ -5,7 +5,7 @@ from .models import Category, Medicine, Stock, PharmacyMedicine
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = ['title', 'sub_category', 'created_at', 'updated_at']
+    list_display = ['title', 'parent', 'created_at', 'updated_at']
 
 
 @admin.register(Medicine)

@@ -9,8 +9,8 @@ from common.upload_to_file import medicine_img
 
 class Category(models.Model):
     """Категория препаратов"""
-    sub_category = models.ForeignKey('self', verbose_name='Под категория', on_delete=models.CASCADE,
-                                     related_name='sub_categories', null=True, blank=True)
+    parent = models.ForeignKey('self', verbose_name='Под категория', on_delete=models.SET_NULL,
+                               related_name='children', null=True, blank=True)
     title = models.CharField('Название', max_length=255)
 
     created_at = models.DateTimeField(auto_now=True)

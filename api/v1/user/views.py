@@ -1,13 +1,13 @@
 from django.contrib.auth import get_user_model
 
-from rest_framework import viewsets, mixins
+from rest_framework import mixins
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
-from apps.user.serializers import UserSerializer
+from api.v1.user.serializers import UserSerializer
 
 User = get_user_model()
 

@@ -3,31 +3,34 @@ from django.contrib.auth import get_user_model
 from rest_framework import mixins
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
-from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
 from rest_framework.response import Response
-from rest_framework.viewsets import GenericViewSet
+from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
-from api.v1.user.serializers import UserSerializer
+from api.v1.user import serializers
 
 User = get_user_model()
 
 
-class UserViewSet(mixins.ListModelMixin,
-                  mixins.RetrieveModelMixin,
-                  mixins.UpdateModelMixin,
-                  mixins.DestroyModelMixin,
-                  GenericViewSet):
+class UserViewSet(ModelViewSet):
     """
     A viewset for viewing and editing user instances.
     """
     permission_classes = [IsAdminUser]
-    serializer_class = UserSerializer
+    serializer_class = serializers.UserSerializer
     queryset = User.objects.all()
 
     def get_permissions(self):
         if self.action in ['me', 'update_me', 'destroy_me']:
             self.permission_classes = [IsAuthenticated]
+        if self.action in ['create']:
+            self.permission_classes = [AllowAny]
         return super().get_permissions()
+
+    def get_serializer_class(self, *args, **kwargs):
+        if self.action in ['create']:
+            return serializers.RegistrationSerializer
+        return super().get_serializer()
 
     def get_object(self):
         if self.action in ['me', 'update_me', 'destroy_me']:

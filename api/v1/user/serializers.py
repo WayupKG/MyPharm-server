@@ -1,10 +1,9 @@
-from django.contrib.auth.password_validation import validate_password
+from django.contrib.auth import get_user_model
+
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
-from django.contrib.auth import get_user_model
-
-from common.validators import validate_user_email
+from common.validators import validate_user_email, validate_password
 
 User = get_user_model()
 
@@ -30,9 +29,16 @@ class RegistrationSerializer(serializers.ModelSerializer):
                   'gender', 'phone', 'address', 'is_pensioner',
                   'is_beneficiaries', 'password', 'password_confirm']
 
-    def validate(self, validated_data: dict[str, str]) -> dict[str, str]:
-        to_validate = validate_password(**validated_data)
+    def validate(self, data: dict[str, str]) -> dict[str, str]:
+        to_validate = validate_password(**data)
+        if to_validate is False:
+            raise ValidationError(
+                {"password_confirm": "Пароли не совпадают"}
+            )
         return to_validate
+
+    def create(self, validated_data):
+        return User.objects.create_user(**validated_data)
 
 
 class EmailSerializer(serializers.Serializer):

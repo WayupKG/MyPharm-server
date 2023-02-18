@@ -62,7 +62,7 @@ class UserViewSet(ModelViewSet):
         headers = self.get_success_headers(serializer.data)
         return Response(
             {
-                'detail': 'Пароль успешно изменено.'
+                'detail': 'На вашу электронную почту отправлено разовый код.'
             },
             status=status.HTTP_200_OK,
             headers=headers
@@ -73,4 +73,10 @@ class UserViewSet(ModelViewSet):
         serializer = self.get_serializer(data=self.request.data)
         serializer.is_valid(raise_exception=True)
         headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_200_OK, headers=headers)
+        return Response(
+            {
+                'detail': 'Пароль успешно изменено.'
+            },
+            status=status.HTTP_200_OK,
+            headers=headers
+        )

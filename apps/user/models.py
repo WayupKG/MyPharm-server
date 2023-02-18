@@ -1,3 +1,5 @@
+import random
+
 from django.db import models
 from django.contrib.auth.models import PermissionsMixin
 from django.contrib.auth.base_user import AbstractBaseUser
@@ -5,6 +7,30 @@ from django.contrib.auth.base_user import AbstractBaseUser
 from apps.user.managers import UserManager
 from common.constans import GENDER_MEN, GENDER_WOMEN
 from common.upload_to_file import avatar_img
+
+
+class UserActivateCode(models.Model):
+    """Код активации пользователя"""
+    user = models.OneToOneField("User", on_delete=models.CASCADE, related_name='activate_code')
+    counter = models.PositiveIntegerField(default=0)
+    code = models.PositiveIntegerField(default=0)
+
+    updated_at = models.DateTimeField(auto_now=True)
+
+    objects = UserManager()
+
+    class Meta:
+        verbose_name = 'Код активации'
+        verbose_name_plural = 'Код активации'
+
+    def __str__(self) -> str:
+        return f"{self.user} - {self.code}"
+
+    def set_code(self):
+        self.code = random.randint(100000, 999999)
+        self.counter += 1
+        self.save()
+        return self.code
 
 
 class User(AbstractBaseUser, PermissionsMixin):
@@ -29,8 +55,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_pensioner = models.BooleanField(default=False)
     is_beneficiaries = models.BooleanField(default=False)
 
-    activate_code = models.PositiveIntegerField(default=0, null=True, blank=True)
-
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -51,3 +75,9 @@ class User(AbstractBaseUser, PermissionsMixin):
         if self.sur_name:
             return f"{self.first_name} {self.last_name} {self.sur_name}".strip()
         return f"{self.first_name} {self.last_name}".strip()
+
+    def get_new_activate_code(self):
+        if hasattr(self, 'activate_code'):
+            return self.activate_code.set_code()
+        user_activate_code = UserActivateCode.objects.create(user_id=self.id)
+        return user_activate_code.set_code()

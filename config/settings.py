@@ -12,11 +12,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 env = environs.Env()
 env.read_env('.env')
 
-SECRET_KEY = os.environ.get("SECRET_KEY", get_random_secret_key())
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
 DEBUG = bool(os.environ.get("DEBUG", True))
 
 ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "127.0.0.1").split(',')
+
+FRONT_END_SITE = os.environ.get('FRONT_END_SITE')
 
 # Application definition
 
@@ -108,6 +110,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+PASSWORD_RESET_TIMEOUT = 10_800
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/

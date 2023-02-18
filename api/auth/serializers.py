@@ -1,10 +1,11 @@
 from django.contrib.auth import authenticate, get_user_model
 from django.contrib.auth.models import update_last_login
-from django.utils.translation import gettext_lazy as _
 from rest_framework import exceptions, serializers
 from rest_framework_simplejwt.serializers import PasswordField
 from rest_framework_simplejwt.settings import api_settings
 from rest_framework_simplejwt.tokens import RefreshToken
+
+from common.constans import DEFAULT_ERROR_MESSAGES
 
 User = get_user_model()
 
@@ -12,13 +13,6 @@ User = get_user_model()
 class MyTokenObtainSerializer(serializers.Serializer):
     username_field = User.USERNAME_FIELD
     token_class = None
-
-    default_error_messages = {
-        'invalid_email': _("Пользователь с такой электронной почтой не существует."),
-        'invalid_password': _(
-            'Пожалуйста, введите правильный пароль. Обратите внимание, что пароль чувствителен к регистру.'),
-        'inactive': _("Ваша учетная запись находится на рассмотрении."),
-    }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -32,11 +26,11 @@ class MyTokenObtainSerializer(serializers.Serializer):
             if email[0].is_active:
                 return value.lower()
             raise exceptions.AuthenticationFailed(
-                self.default_error_messages.get('inactive'),
+                DEFAULT_ERROR_MESSAGES.get('inactive'),
                 'inactive'
             )
         raise exceptions.AuthenticationFailed(
-            self.default_error_messages.get('invalid_email'),
+            DEFAULT_ERROR_MESSAGES.get('invalid_email'),
             'invalid_email'
         )
 
@@ -54,7 +48,7 @@ class MyTokenObtainSerializer(serializers.Serializer):
 
         if not api_settings.USER_AUTHENTICATION_RULE(self.user):
             raise exceptions.AuthenticationFailed(
-                self.error_messages["invalid_password"],
+                DEFAULT_ERROR_MESSAGES.get("invalid_password"),
                 "invalid_password",
             )
 

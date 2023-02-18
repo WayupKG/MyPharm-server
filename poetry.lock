@@ -140,6 +140,22 @@ zookeeper = ["kazoo (>=1.3.1)"]
 zstd = ["zstandard"]
 
 [[package]]
+name = "celery-singleton"
+version = "0.3.1"
+description = "Prevent duplicate celery tasks"
+category = "main"
+optional = false
+python-versions = ">=3.6,<4.0"
+files = [
+    {file = "celery-singleton-0.3.1.tar.gz", hash = "sha256:260ce4978e631f8682ea0ccb03d7f3b87d42bc20e04e9bd46ddb78a2f8035d1e"},
+    {file = "celery_singleton-0.3.1-py3-none-any.whl", hash = "sha256:76b30a1bbe31d42030924b3eecfcaae2ab3ab99bf43e607cd46437f012434420"},
+]
+
+[package.dependencies]
+celery = ">=4"
+redis = "*"
+
+[[package]]
 name = "certifi"
 version = "2022.12.7"
 description = "Python package for providing Mozilla's CA Bundle."
@@ -1339,4 +1355,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "ef17a37ddc7143fd6ec6b1466468ab848ecf92b4f4a3ead4a382b9d5e0dcb287"
+content-hash = "fb4ec785ad19c3bd885f9de8fc634c7ddcd31e1e2aa8539f15f48ed9cac7f16a"

@@ -15,8 +15,7 @@ User = get_user_model()
 def send_activated_code(email):
     with transaction.atomic():
         user = User.objects.select_for_update().get(email=email)
-        user.get_new_activate_code()
-        activated_code = user.activate_code.code
+        activated_code = user.get_new_activate_code()
     title, from_email = "Служба технической поддержки учетных записей MyPharm", settings.EMAIL_HOST_USER
     title_send = 'Разовый код'
     to_form, headers = f'{user.get_full_name()} <{email}>', {'From': f'{title} <{from_email}>'}

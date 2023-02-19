@@ -72,6 +72,7 @@ class UserViewSet(ModelViewSet):
     def password_reset(self, *args, **kwargs):
         serializer = self.get_serializer(data=self.request.data)
         serializer.is_valid(raise_exception=True)
+        serializer.save()
         headers = self.get_success_headers(serializer.data)
         return Response(
             {

@@ -78,6 +78,8 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def get_new_activate_code(self):
         if hasattr(self, 'activate_code'):
-            return self.activate_code.set_code()
+            self.activate_code.set_code()
+            return self.activate_code.code
         user_activate_code = UserActivateCode.objects.create(user_id=self.id)
-        return user_activate_code.set_code()
+        user_activate_code.set_code()
+        return user_activate_code.code

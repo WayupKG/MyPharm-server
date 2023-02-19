@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.utils import timezone
 
 from rest_framework import serializers
@@ -66,16 +67,14 @@ class EmailSerializer(serializers.Serializer):
 class PasswordResetSerializer(serializers.Serializer):
     """Сериализация для сброса пароля"""
     email = serializers.CharField(write_only=True)
-    activate_code = serializers.IntegerField(write_only=True)
+    activate_code = serializers.IntegerField(write_only=True, validators=[
+                                                MinValueValidator(100000),
+                                                MaxValueValidator(999999),
+                                            ])
     password = serializers.CharField(max_length=128, min_length=8, write_only=True)
     password_confirm = serializers.CharField(max_length=128, min_length=8, write_only=True)
 
     def validate(self, data: dict[str, str]) -> dict[str, str]:
-        if not validate_user_email(data.get('email')):
-            raise ValidationError(
-                DEFAULT_ERROR_MESSAGES.get('invalid_email'),
-                "invalid_email"
-            )
         activate_codes = UserActivateCode.objects.filter(user__email=data.get('email'), code=data.get('activate_code'))
         if not activate_codes.exists():
             raise ValidationError(
@@ -96,3 +95,10 @@ class PasswordResetSerializer(serializers.Serializer):
                 'invalid_password_confirm'
             )
         return to_validate
+
+    def save(self, **kwargs):
+        user = User.objects.prefetch_related('activate_code').get(email=self.validated_data.get('email'))
+        user.set_password(self.validated_data.get('password'))
+        user.activate_code.code = 0
+        user.activate_code.save()
+        user.save()

@@ -1,22 +1,27 @@
 from django.core.validators import MaxValueValidator
 from django.db import models
 
+from mptt.managers import TreeManager
+from mptt.models import MPTTModel
+from mptt.fields import TreeForeignKey
+
 from imagekit.models import ProcessedImageField
 from imagekit.processors import ResizeToFill
 
 from common.upload_to_file import medicine_img
 
 
-class Category(models.Model):
+class Category(MPTTModel):
     """Категория препаратов"""
-    parent = models.ForeignKey('self', verbose_name='Под категория', on_delete=models.SET_NULL,
-                               related_name='children', null=True, blank=True)
+    parent = TreeForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='children')
     title = models.CharField('Название', max_length=255)
 
     created_at = models.DateTimeField(auto_now=True)
     updated_at = models.DateTimeField(auto_now_add=True)
+    objects = TreeManager()
 
-    objects = models.Manager()
+    class MPTTMeta:
+        order_insertion_by = ['title']
 
     class Meta:
         verbose_name = 'Категория'
@@ -30,7 +35,7 @@ class Medicine(models.Model):
     """Препарат"""
     title = models.CharField('Название', max_length=255)
     description = models.TextField('Описание')
-    category = models.ForeignKey(Category, verbose_name='Категория', on_delete=models.PROTECT)
+    category = models.ForeignKey(Category, verbose_name='Категория', on_delete=models.PROTECT, related_name='medicines')
     image = ProcessedImageField(verbose_name='Изображение', upload_to=medicine_img,
                                 format='webp', options={'quality': 90})
     is_prescription_required = models.BooleanField(verbose_name='Рецептурный препарат', default=False)

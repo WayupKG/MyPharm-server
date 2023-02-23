@@ -31,7 +31,7 @@ class CategoryViewSet(viewsets.ModelViewSet):
 
     @action(methods=['GET'], detail=True)
     def medicines(self, *args, **kwargs):
-        medicines = Medicine.objects.filter(category=self.get_object())
+        medicines = Medicine.objects.filter(category__in=self.get_object().get_descendants(include_self=True))
         serializer = self.get_serializer(medicines, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 

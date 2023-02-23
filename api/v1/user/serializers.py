@@ -19,8 +19,8 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['email', 'first_name', 'last_name', 'sur_name',
-                  'gender', 'phone', 'address', 'is_pensioner',
-                  'is_beneficiaries']
+                  'gender', 'phone', 'address', 'avatar', 'is_pensioner',
+                  'is_beneficiaries', 'is_superuser']
 
 
 class RegistrationSerializer(serializers.ModelSerializer):
@@ -31,7 +31,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['email', 'first_name', 'last_name', 'sur_name',
-                  'gender', 'phone', 'address', 'is_pensioner',
+                  'gender', 'phone', 'address', 'avatar', 'is_pensioner',
                   'is_beneficiaries', 'password', 'password_confirm']
 
     def validate(self, data: dict[str, str]) -> dict[str, str]:

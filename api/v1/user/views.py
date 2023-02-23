@@ -52,7 +52,12 @@ class UserViewSet(ModelViewSet):
 
     @me.mapping.delete
     def destroy_me(self, *args, **kwargs):
-        return super().destroy(self.request, *args, **kwargs)
+        instance = self.get_object()
+        self.perform_destroy(instance)
+        return Response(
+            {'detail': 'Пользователь успешно удалено.'},
+            status=status.HTTP_204_NO_CONTENT
+        )
 
     @action(['post'], detail=False)
     def password(self, *args, **kwargs):

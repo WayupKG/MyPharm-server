@@ -1,9 +1,11 @@
 from django.contrib.auth import get_user_model
 from django.core.validators import MaxValueValidator, MinValueValidator
-from django.utils import timezone
+from django.contrib.auth.models import update_last_login
 
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.settings import api_settings
 
 from apps.user.models import UserActivateCode
 from common.constans import DEFAULT_ERROR_MESSAGES
@@ -19,20 +21,25 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['email', 'first_name', 'last_name', 'sur_name',
-                  'gender', 'phone', 'address', 'is_pensioner',
-                  'is_beneficiaries']
+                  'gender', 'phone', 'address', 'avatar', 'is_pensioner',
+                  'is_beneficiaries', 'is_superuser']
 
 
 class RegistrationSerializer(serializers.ModelSerializer):
     """Сериализация пользователя"""
+    token_class = RefreshToken
     password = serializers.CharField(max_length=128, min_length=8, write_only=True)
     password_confirm = serializers.CharField(max_length=128, min_length=8, write_only=True)
 
     class Meta:
         model = User
         fields = ['email', 'first_name', 'last_name', 'sur_name',
-                  'gender', 'phone', 'address', 'is_pensioner',
+                  'gender', 'phone', 'address', 'avatar', 'is_pensioner',
                   'is_beneficiaries', 'password', 'password_confirm']
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.user = None
 
     def validate(self, data: dict[str, str]) -> dict[str, str]:
         to_validate = validate_password(**data)
@@ -44,7 +51,18 @@ class RegistrationSerializer(serializers.ModelSerializer):
         return to_validate
 
     def create(self, validated_data):
-        return User.objects.create_user(**validated_data)
+        self.user = User.objects.create_user(**validated_data)
+        return self.user
+
+    @property
+    def data(self):
+        data = super().validate(self.validated_data)
+        refresh = self.token_class.for_user(self.user)
+        data["refresh"] = str(refresh)
+        data["access"] = str(refresh.access_token)
+        if api_settings.UPDATE_LAST_LOGIN:
+            update_last_login(None, self.user)
+        return data
 
 
 class EmailSerializer(serializers.Serializer):

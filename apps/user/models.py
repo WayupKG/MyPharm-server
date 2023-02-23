@@ -4,6 +4,9 @@ from django.db import models
 from django.contrib.auth.models import PermissionsMixin
 from django.contrib.auth.base_user import AbstractBaseUser
 
+from imagekit.models import ProcessedImageField
+from imagekit.processors import ResizeToFill
+
 from apps.user.managers import UserManager
 from common.constans import GENDER_MEN, GENDER_WOMEN
 from common.upload_to_file import avatar_img
@@ -45,7 +48,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     sur_name = models.CharField('Отчество', max_length=50, blank=True, null=True)
     gender = models.CharField('Пол', max_length=10, choices=GENDER)
     phone = models.CharField('Телефон', max_length=120)
-    avatar = models.ImageField('Изображение', upload_to=avatar_img, blank=True, null=True)
+    avatar = ProcessedImageField(verbose_name='Изображение', upload_to=avatar_img,
+                                 format='webp', options={'quality': 90}, blank=True, null=True)
     address = models.CharField('Адрес', max_length=128, blank=True, null=True)
 
     is_superuser = models.BooleanField(default=False)
